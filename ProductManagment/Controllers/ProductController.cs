@@ -1,39 +1,112 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Application.Dtos;
+using Application.Interfaces;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Presentation.Filters;
 
 namespace Presentation.Controllers
 {
-    [Route("api/[controller]")]
+    [Authorize]
     [ApiController]
-    public class ProductController : BaseController
+    [Route("api/products")]
+    public class ProductController : ControllerBase
     {
-        public ProductController() { }
+        private readonly IProductService ProductService;
 
-        [HttpGet]
-        public IActionResult Get()
+        public ProductController(IProductService productService)
         {
-
-            return Ok();
+            ProductService = productService;
         }
 
         [HttpPost]
-        public IActionResult Save()
+        public async Task<IActionResult> Create([FromBody] ProductDto productDto)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
 
-            return Ok();
+            try
+            {
+                productDto.Creator = User.Identity.Name;
+                var succeed = await ProductService.CreateProductAsync(productDto);
+                return Ok(succeed);
+            }
+            catch
+            {
+                return StatusCode(500, "An error occurred");
+            }
         }
 
+        [AllowAnonymous]
+        [HttpGet]
+        public async Task<IActionResult> GetAll()
+        {
+            try
+            {
+                var products = await ProductService.GetAllProductsAsync();
+                return Ok(products);
+            }
+            catch
+            {
+                return StatusCode(500, "An error occurred");
+            }
+        }
+
+        [AllowAnonymous]
+        [HttpGet("GetById")]
+        public async Task<IActionResult> GetById(int id)
+        {
+            try
+            {
+                var product = await ProductService.GetProductByIdAsync(id);
+                return product == null ? NotFound() : Ok(product);
+            }
+            catch
+            {
+                return StatusCode(500, "An error occurred");
+            }
+        }
+
+        [ServiceFilter(typeof(ProductAuthorizationFilter))]
         [HttpPut]
-        public IActionResult Update()
+        public async Task<IActionResult> Update(int id, [FromBody] ProductDto productDto)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
 
-            return Ok();
+            try
+            {
+                productDto.Id = id;
+                productDto.Creator = User.Identity.Name;
+                var res = await ProductService.UpdateProductAsync(productDto);
+                return Ok(res);
+            }
+            catch
+            {
+                return StatusCode(500, "An error occurred");
+            }
         }
 
+        [ServiceFilter(typeof(ProductAuthorizationFilter))]
         [HttpDelete]
-        public IActionResult Delete()
+        public async Task<IActionResult> Delete(int id)
         {
+            try
+            {
+                var existingProduct = await ProductService.GetProductByIdAsync(id);
+                if (existingProduct == null)
+                {
+                    return NotFound();
+                }
 
-            return Ok();
+                await ProductService.DeleteProductAsync(id);
+                return NoContent();
+            }
+            catch
+            {
+                return StatusCode(500, "An error occurred");
+            }
         }
     }
 }

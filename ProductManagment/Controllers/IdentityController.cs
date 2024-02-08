@@ -1,39 +1,65 @@
-﻿using Application.Dtos;
-using Application.Interfaces;
+﻿using Application.Interfaces;
+using Domain.Identity;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Text;
 
 namespace Presentation.Controllers
 {
+    [AllowAnonymous]
+    [Route("api/[controller]")]
     [ApiController]
-    [Route("Api/UserManagment")]
-    public class UserController : ControllerBase
+    public class IdentityController : BaseController
     {
-        private readonly IUserAppService UserAppService;
+        private readonly SignInManager<User> UserSignInManager;
+        private readonly UserManager<User> UserManager;
+        private readonly IUserAppService UserService;
+        private readonly IConfiguration Configuration;
 
-        public UserController(IUserAppService userAppService)
+        public IdentityController(UserManager<User> userManager, SignInManager<User> signInManager, IUserAppService userService, IConfiguration configuration)
         {
-            UserAppService = userAppService;
+            UserManager = userManager;
+            UserSignInManager = signInManager;
+            UserService = userService;
+            Configuration = configuration;
         }
 
-        [HttpPost("CreateUser")]
-        public async Task<IActionResult> CreateUser([FromBody] UserDto request)
+        [HttpPost("Login")]
+        public async Task<IActionResult> Login(string username, string password)
         {
-            var result = await UserAppService.CreateUserAsync(request.Username, request.Email, request.Password);
-            return result.Errors is not null ? BadRequest(result.Errors) : Ok("Create User Succeed");
+            if (string.IsNullOrEmpty(username))
+                return Unauthorized();
+
+            var user = await UserManager.FindByNameAsync(username);
+            if (!await UserManager.CheckPasswordAsync(user, password))
+                return Unauthorized();
+
+            var res = await UserSignInManager.PasswordSignInAsync(user, password, false, false);
+            if (!res.Succeeded)
+                return Unauthorized();
+
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:SecretKey"]));
+            var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+
+            var Sectoken = new JwtSecurityToken(Configuration["Jwt:Issuer"],
+              Configuration["Jwt:Issuer"],
+              null,
+              expires: DateTime.Now.AddMinutes(120),
+              signingCredentials: credentials);
+
+            var token = new JwtSecurityTokenHandler().WriteToken(Sectoken);
+
+            return Ok(token);
         }
 
-        [HttpGet("GetUserById")]
-        public async Task<IActionResult> GetUserById(string userId)
+        [HttpPost("Logout")]
+        public async Task<IActionResult> Logout()
         {
-            var user = await UserAppService.GetUserByIdAsync(userId);
-            return user == null ? NotFound() : Ok(user);
-        }
-
-        [HttpGet("GetUserByUsername")]
-        public async Task<IActionResult> GetUserByUsername(string username)
-        {
-            var user = await UserAppService.GetUserByUsernameAsync(username);
-            return user == null ? NotFound() : Ok(user);
+            await UserSignInManager.SignOutAsync();
+            return Ok();
         }
     }
 }

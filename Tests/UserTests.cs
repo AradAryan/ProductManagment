@@ -10,12 +10,12 @@ namespace Tests
     public class UserTests
     {
         private Mock<IUserAppService> _userAppServiceMock;
-        private UserController _controller;
+        private UserManagmentController _controller;
 
         public UserTests()
         {
             _userAppServiceMock = new Mock<IUserAppService>();
-            _controller = new UserController(_userAppServiceMock.Object);
+            _controller = new UserManagmentController(_userAppServiceMock.Object);
         }
 
         [Fact]
