@@ -18,6 +18,7 @@ namespace Presentation.Controllers
             ProductService = productService;
         }
 
+        [JwtTokenAuthorization]
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] ProductDto productDto)
         {
@@ -66,6 +67,7 @@ namespace Presentation.Controllers
             }
         }
 
+        [JwtTokenAuthorization]
         [ServiceFilter(typeof(ProductAuthorizationFilter))]
         [HttpPut]
         public async Task<IActionResult> Update(int id, [FromBody] ProductDto productDto)
@@ -88,6 +90,7 @@ namespace Presentation.Controllers
             }
         }
 
+        [JwtTokenAuthorization]
         [ServiceFilter(typeof(ProductAuthorizationFilter))]
         [HttpDelete]
         public async Task<IActionResult> Delete(int id)

@@ -1,6 +1,7 @@
 ﻿using Application.Dtos;
 using Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Presentation.Filters;
 
 namespace Presentation.Controllers
 {
@@ -22,6 +23,7 @@ namespace Presentation.Controllers
             return result.Errors is not null ? BadRequest(result.Errors) : Ok("Create User Succeed");
         }
 
+        [JwtTokenAuthorization]
         [HttpGet("GetUserById")]
         public async Task<IActionResult> GetUserById(string userId)
         {
@@ -29,6 +31,7 @@ namespace Presentation.Controllers
             return user == null ? NotFound() : Ok(user);
         }
 
+        [JwtTokenAuthorization]
         [HttpGet("GetUserByUsername")]
         public async Task<IActionResult> GetUserByUsername(string username)
         {

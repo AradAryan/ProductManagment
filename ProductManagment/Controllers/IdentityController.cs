@@ -1,5 +1,4 @@
-﻿using Application.Interfaces;
-using Domain.Identity;
+﻿using Domain.Identity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -16,14 +15,12 @@ namespace Presentation.Controllers
     {
         private readonly SignInManager<User> UserSignInManager;
         private readonly UserManager<User> UserManager;
-        private readonly IUserAppService UserService;
         private readonly IConfiguration Configuration;
 
-        public IdentityController(UserManager<User> userManager, SignInManager<User> signInManager, IUserAppService userService, IConfiguration configuration)
+        public IdentityController(UserManager<User> userManager, SignInManager<User> signInManager, IConfiguration configuration)
         {
             UserManager = userManager;
             UserSignInManager = signInManager;
-            UserService = userService;
             Configuration = configuration;
         }
 
@@ -45,7 +42,7 @@ namespace Presentation.Controllers
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
             var Sectoken = new JwtSecurityToken(Configuration["Jwt:Issuer"],
-              Configuration["Jwt:Issuer"],
+              Configuration["Jwt:Audience"],
               null,
               expires: DateTime.Now.AddMinutes(120),
               signingCredentials: credentials);
