@@ -1,10 +1,10 @@
 ﻿using Application.Dtos;
-using Application.Interfaces;
+using Application.Services.Interfaces;
 using AutoMapper;
-using Domain.Identity;
+using Domain.IdentityEntities;
 using Microsoft.AspNetCore.Identity;
 
-namespace Application.Implementations
+namespace Application.Services.Implementations
 {
     public class UserAppService : IUserAppService
     {

@@ -1,7 +1,6 @@
 ﻿using Application.Dtos;
-using Domain.Entities;
 
-namespace Application.Interfaces
+namespace Application.Services.Interfaces
 {
     public interface IProductService
     {

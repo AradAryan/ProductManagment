@@ -1,7 +1,7 @@
 ﻿using Application.Dtos;
 using Microsoft.AspNetCore.Identity;
 
-namespace Application.Interfaces
+namespace Application.Services.Interfaces
 {
     public interface IUserAppService
     {

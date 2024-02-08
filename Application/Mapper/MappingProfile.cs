@@ -1,7 +1,7 @@
 ﻿using Application.Dtos;
 using AutoMapper;
 using Domain.Entities;
-using Domain.Identity;
+using Domain.IdentityEntities;
 
 namespace Application.Mapper
 {

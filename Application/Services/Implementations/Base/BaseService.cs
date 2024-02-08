@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 
-namespace Application.Implementations.Base
+namespace Application.Services.Implementations.Base
 {
     public class BaseService(IMapper mapper)
     {

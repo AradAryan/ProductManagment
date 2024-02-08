@@ -1,9 +1,8 @@
-﻿using Domain.Identity;
-using Microsoft.AspNetCore.Identity;
+﻿using Domain.IdentityEntities;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-namespace Infrastructure
+namespace Infrastructure.DbContexts
 {
     public class IdentityDbContext : IdentityDbContext<User>
     {

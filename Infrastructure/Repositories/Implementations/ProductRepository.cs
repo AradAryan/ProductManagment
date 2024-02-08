@@ -1,10 +1,9 @@
 ﻿using Domain.Entities;
-using Infrastructure.Interfaces;
+using Infrastructure.DbContexts;
+using Infrastructure.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
-using Microsoft.Extensions.Hosting.Internal;
 
-namespace Infrastructure.Implementations
+namespace Infrastructure.Repositories.Implementations
 {
     public class ProductRepository : IProductRepository
     {

@@ -1,22 +1,17 @@
-using Application.Implementations;
-using Application.Interfaces;
 using Application.Mapper;
+using Application.Services.Implementations;
+using Application.Services.Interfaces;
 using AutoMapper;
-using Domain.Identity;
-using Infrastructure;
-using Infrastructure.Implementations;
-using Infrastructure.Interfaces;
+using Domain.IdentityEntities;
+using Infrastructure.DbContexts;
+using Infrastructure.Repositories.Implementations;
+using Infrastructure.Repositories.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Presentation.Filters;
-using Swashbuckle.AspNetCore.SwaggerUI;
-using System.Reflection;
 using System.Text;
 
 namespace Presentation
@@ -27,12 +22,8 @@ namespace Presentation
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Add services to the container.
-
             builder.Services.AddControllers();
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
-            //builder.Services.AddSwaggerGen
             builder.Services.AddScoped<ProductAuthorizationFilter>();
             builder.Services.AddControllers();
             builder.Services.AddDbContext<IdentityDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("IdentityConnection")));
@@ -122,22 +113,6 @@ namespace Presentation
             {
                 app.UseSwagger();
                 app.UseSwaggerUI();
-                //app.UseSwaggerUI(c =>
-                //{
-                //    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Product API V1");
-                //    c.RoutePrefix = string.Empty;
-
-                //    c.DocumentTitle = "Your API";
-                //    c.DocExpansion(DocExpansion.None);
-                //    c.DefaultModelExpandDepth(0);
-                //    c.EnableDeepLinking();
-                //    c.DisplayRequestDuration();
-                //    c.EnableFilter();
-                //    c.EnableValidator();
-                //    c.OAuthAppName("Product API - Swagger");
-                //    c.OAuthClientId("swagger");
-                //    c.OAuthClientSecret("swagger");
-                //});
             }
 
             app.UseHttpsRedirection();

@@ -1,12 +1,12 @@
 ﻿using Application.Dtos;
-using Application.Implementations.Base;
-using Application.Interfaces;
+using Application.Services.Implementations.Base;
+using Application.Services.Interfaces;
 using AutoMapper;
 using Domain.Entities;
-using Infrastructure.Interfaces;
+using Infrastructure.Repositories.Interfaces;
 
 
-namespace Application.Implementations
+namespace Application.Services.Implementations
 {
     public class ProductService : BaseService, IProductService
     {

@@ -1,5 +1,5 @@
 using Application.Dtos;
-using Application.Interfaces;
+using Application.Services.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Moq;

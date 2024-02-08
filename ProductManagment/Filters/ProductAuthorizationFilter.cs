@@ -1,7 +1,4 @@
-﻿using Application.Interfaces;
-using Domain.Entities;
-using Microsoft.AspNet.Identity;
-using Microsoft.AspNetCore.Identity;
+﻿using Application.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 
