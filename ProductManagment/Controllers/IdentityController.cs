@@ -23,7 +23,7 @@ namespace Presentation.Controllers
         }
 
         [HttpGet("GetUserById")]
-        public async Task<IActionResult> GetUserById(int userId)
+        public async Task<IActionResult> GetUserById(string userId)
         {
             var user = await UserAppService.GetUserByIdAsync(userId);
             return user == null ? NotFound() : Ok(user);

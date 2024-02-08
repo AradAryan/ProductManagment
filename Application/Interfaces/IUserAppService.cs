@@ -6,7 +6,7 @@ namespace Application.Interfaces
     public interface IUserAppService
     {
         Task<IdentityResult> CreateUserAsync(string username, string email, string password);
-        Task<UserDto> GetUserByIdAsync(int userId);
+        Task<UserDto> GetUserByIdAsync(string userId);
         Task<UserDto> GetUserByUsernameAsync(string username);
     }
 }

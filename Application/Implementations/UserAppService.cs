@@ -36,9 +36,9 @@ namespace Domain.Interfaces
             }
         }
 
-        public async Task<UserDto> GetUserByIdAsync(int userId)
+        public async Task<UserDto> GetUserByIdAsync(string userId)
         {
-            var user = await UserManager.FindByIdAsync(userId.ToString());
+            var user = await UserManager.FindByIdAsync(userId);
             return Mapper.Map<UserDto>(user);
         }
 
