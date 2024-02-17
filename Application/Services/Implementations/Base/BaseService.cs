@@ -2,9 +2,9 @@
 
 namespace Application.Services.Implementations.Base
 {
-    public class BaseService(IMapper mapper)
+    public class BaseService
     {
-        public IMapper Mapper { get; set; } = mapper;
+
     }
 
 }

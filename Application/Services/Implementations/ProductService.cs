@@ -1,49 +1,67 @@
-﻿using Application.Dtos;
+﻿using Application.Common.Commands;
+using Application.Common.Handlers;
+using Application.Dtos;
 using Application.Services.Implementations.Base;
 using Application.Services.Interfaces;
 using AutoMapper;
-using Domain.Entities;
-using Infrastructure.Repositories.Interfaces;
-
 
 namespace Application.Services.Implementations
 {
     public class ProductService : BaseService, IProductService
     {
-        public IProductRepository ProductRepository { get; set; }
 
-        public ProductService(IProductRepository productRepository, IMapper mapper) : base(mapper)
+        public ICommandHandler<CreateProductCommand, bool> CreateProductCommandHandler { get; set; }
+
+        public IQueryHandler<GetProductByIdQuery, ProductDto> GetProductByIdQueryHandler { get; set; }
+
+        public IQueryHandler<GetAllProductsQuery, List<ProductDto>> GetAllProductsQueryHandler { get; set; }
+
+        public ICommandHandler<UpdateProductCommand, bool> UpdateProductCommandHandler { get; set; }
+
+        public ICommandHandler<DeleteProductCommand, bool> DeleteProductCommandHandler { get; set; }
+
+        public ProductService(
+            ICommandHandler<CreateProductCommand, bool> createProductCommandHandler,
+            IQueryHandler<GetProductByIdQuery, ProductDto> getProductByIdQueryHandler,
+            IQueryHandler<GetAllProductsQuery, List<ProductDto>> getAllProductsQueryHandler,
+            ICommandHandler<UpdateProductCommand, bool> updateProductCommandHandler,
+            ICommandHandler<DeleteProductCommand, bool> deleteProductCommandHandler)
         {
-            ProductRepository = productRepository;
+            CreateProductCommandHandler = createProductCommandHandler;
+            GetProductByIdQueryHandler = getProductByIdQueryHandler;
+            GetAllProductsQueryHandler = getAllProductsQueryHandler;
+            UpdateProductCommandHandler = updateProductCommandHandler;
+            DeleteProductCommandHandler = deleteProductCommandHandler;
         }
 
         public async Task<bool> CreateProductAsync(ProductDto product)
         {
-            var data = Mapper.Map<ProductDto, Product>(product);
-            return await ProductRepository.CreateAsync(data);
+            var command = new CreateProductCommand { Product = product };
+            return await CreateProductCommandHandler.HandleAsync(command);
         }
 
         public async Task<ProductDto> GetProductByIdAsync(int id)
         {
-            var res = await ProductRepository.GetByIdAsync(id);
-            return Mapper.Map<Product, ProductDto>(res);
+            var query = new GetProductByIdQuery { Id = id };
+            return await GetProductByIdQueryHandler.HandleAsync(query);
         }
 
         public async Task<List<ProductDto>> GetAllProductsAsync()
         {
-            var res = await ProductRepository.GetAllAsync();
-            return Mapper.Map<List<Product>, List<ProductDto>>(res);
+            var query = new GetAllProductsQuery();
+            return await GetAllProductsQueryHandler.HandleAsync(query);
         }
 
         public async Task<bool> UpdateProductAsync(ProductDto product)
         {
-            var res = Mapper.Map<ProductDto, Product>(product);
-            return await ProductRepository.UpdateAsync(res);
+            var command = new UpdateProductCommand { Product = product };
+            return await UpdateProductCommandHandler.HandleAsync(command);
         }
 
         public async Task<bool> DeleteProductAsync(int id)
         {
-            return await ProductRepository.DeleteAsync(id);
+            var command = new DeleteProductCommand { Id = id };
+            return await DeleteProductCommandHandler.HandleAsync(command);
         }
     }
 }

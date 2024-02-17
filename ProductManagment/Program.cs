@@ -1,3 +1,6 @@
+using Application.Common.Commands;
+using Application.Common.Handlers;
+using Application.Dtos;
 using Application.Mapper;
 using Application.Services.Implementations;
 using Application.Services.Interfaces;
@@ -46,6 +49,13 @@ namespace Presentation
             builder.Services.AddScoped<IUserAppService, UserAppService>();
             builder.Services.AddScoped<IProductService, ProductService>();
             builder.Services.AddScoped<IProductRepository, ProductRepository>();
+
+            builder.Services.AddScoped<ICommandHandler<CreateProductCommand, bool>, CreateProductCommandHandler>();
+            builder.Services.AddScoped<ICommandHandler<UpdateProductCommand, bool>, UpdateProductCommandHandler>();
+            builder.Services.AddScoped<ICommandHandler<DeleteProductCommand, bool>, DeleteProductCommandHandler>();
+            builder.Services.AddScoped<IQueryHandler<GetProductByIdQuery, ProductDto>, GetProductByIdQueryHandler>();
+            builder.Services.AddScoped<IQueryHandler<GetAllProductsQuery, List<ProductDto>>, GetAllProductQueryHandler>();
+
 
             builder.Services.AddSwaggerGen(opt =>
             {
