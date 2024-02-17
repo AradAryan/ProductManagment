@@ -104,7 +104,7 @@ namespace Presentation.Controllers
                 }
 
                 await ProductService.DeleteProductAsync(id);
-                return NoContent();
+                return Ok();
             }
             catch
             {
